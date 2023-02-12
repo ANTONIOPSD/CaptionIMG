@@ -4,6 +4,7 @@ I use it for Dreambooth training (StableDiffusion).
 
 
 The captions will be saved as text files in the same location as the loaded images with the same name as the image + .txt  (cat.jpg -> cat.txt).
+It will also load existing captions and will be shown in the text area.
 
 Tested on Windows 11 and Ubuntu 22.10
 
