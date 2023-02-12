@@ -3,7 +3,7 @@ Simple program to manually written in python to caption your images (or any othe
 
 The captions will be saved as text files in the same location as the loaded images.
 
-Easy steps:
+# Easy steps:
 
 1. Run the program.
 2. Open the images.
