@@ -1,3 +1,4 @@
+import os
 import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
@@ -12,7 +13,7 @@ def natural_sort(l):
     alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)] 
     return sorted(l, key = alphanum_key)
 
-class ImageDescriptor:
+class CaptionIMG:
     def __init__(self, root):
         
         self.root = root
@@ -30,6 +31,7 @@ class ImageDescriptor:
         self.image_list = Listbox(self.frame_list, width=30)
         
         self.image_list.bind('<<ListboxSelect>>', self.load_image)
+        self.image_list.bind('<Control-s>', self.save)
         
         self.horizontal_scrollbar = tk.Scrollbar(self.frame_list, orient='horizontal')
         self.horizontal_scrollbar.pack(side='bottom', fill='x')
@@ -43,7 +45,8 @@ class ImageDescriptor:
         
         self.image_list.pack(side='left', fill='both')
         self.image_label = tk.Label(self.root)
-        self.image_label.pack(side='top', anchor='center', expand=True)
+        self.image_label.pack(side='top', anchor='center')
+        self.image_label.pack_propagate(False)
         
         self.text_entry = tk.Text(self.root, height=6, width=85, wrap='word')
         self.text_entry.config(borderwidth=5, relief="groove")
@@ -51,6 +54,7 @@ class ImageDescriptor:
         
         self.save_button = tk.Button(self.root, text="Save Captions", command=self.save)
         self.save_button.pack(side='bottom')
+        self.text_entry.bind('<Control-s>', self.save)
         
         self.open_button = tk.Button(self.root, text="Open Images", command=self.open_images)
         self.open_button.pack(side='bottom')
@@ -64,7 +68,7 @@ class ImageDescriptor:
                 self.image_list.delete('0','end')
                 self.file_map = {}
                 for file_path in file_paths:
-                    file_name = file_path.split("/")[-1]
+                    file_name = os.path.basename(file_path)
                     self.file_map[file_name] = file_path
                     self.image_list.insert('end', file_name)
         except:
@@ -115,13 +119,16 @@ class ImageDescriptor:
 
             description_file = str(self.current_image_path).rsplit('.', 1)[0] + ".txt"
             
-            with open(description_file, "r") as file:
-                description = file.read()
-                self.text_entry.insert(1.0, description)
+            if os.path.isfile(description_file):
+                with open(description_file, "r") as file:
+                    description = file.read()
+                    self.text_entry.insert(1.0, description)
+            else:
+                self.text_entry.delete(1.0, 'end')
         except:
             pass
 
-    def save(self):
+    def save(self, event=None):
         try:
             description = self.text_entry.get(1.0, 'end')
             description_file = str(self.current_image_path).rsplit('.', 1)[0] + ".txt"
@@ -133,5 +140,5 @@ class ImageDescriptor:
 
 
 root = tk.Tk()
-app = ImageDescriptor(root)
+app = CaptionIMG(root)
 root.mainloop()
